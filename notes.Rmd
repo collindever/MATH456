@@ -1,1 +1,51 @@
-## Class 2 1-24-20
+## Class 3 1-27-20
+
+### Mathematical Models
+
+We want to see how two variables are related
+
+$$y_i = \beta_0 + \beta_1X_i + \varepsilon_i$$
+$$\varepsilon_i \stackrel{iid}{\sim} N(0, \sigma^2)$$
+$$\varepsilon_i = y_i - \hat{y}_i$$
+
+This means the error (residuals) are independent of each other and normally distrubuted.  This applies even when we have more that two variables it just is extedning to multi-diminesional space.  **The Goal is to Minimize the Error (residuals)**
+
+#### Example
+
+We want to model an equation where Lung effective volume is our dependent variable and are independent variables are Age and Height
+
+**Model**
+
+$$y \sim \beta_0 + \beta_1X_1 + \beta_2X_2$$
+
+```{r}
+#mv_model <- lm(FFEV1 ~ FAGE + FHEIGHT, data = fev)
+#confit(mv_model)
+```
+
+**Equation**
+
+$$y = -0.027X_1 + .114X_2 - 2.76$$
+
+**Interpretation**
+
+Holding height constant, a father who is one year older is expected to have a FEV value 0.03 (0.01, 0.04) litres less (p<0.0001)
+
+**Interpreting Results**
+
+##### Always Use your residual standard error
+
+**Interpretation template**
+
+For every 1 [unit] increase in [X] [Y] changes by $\Delta X$ 
+
+**More than 2 X's**
+
+After controlling for all other X's ... [see above]
+
+**Example Interpretation**
+
+Given the above example including gender as a factor in our linear model we get a value of -0.64 (-0.79,-.048)
+
+Holding height and age constant, a female is expected to have a FEV value of 0.64 (0.48,0.79) litres less than a male. (p < 0.001)
+
