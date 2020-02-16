@@ -49,3 +49,195 @@ Given the above example including gender as a factor in our linear model we get 
 
 Holding height and age constant, a female is expected to have a FEV value of 0.64 (0.48,0.79) litres less than a male. (p < 0.001)
 
+**FOR NEXT CLASS**
+
+The regression equation for the model with gender is
+
+$$y=−2.24−0.02age+0.11height−0.64genderF$$
+
+* b0: For a male who is 0 years old and 0 cm tall, their FEV is -2.24L.
+* b1: For every additional year older an individual is, their FEV1 decreases by 0.02L.
+* b2: For every additional cm taller an individual is, their FEV1 increases by 0.16L.
+* b3: Females have 0.64L lower FEV compared to males.
+
+Note: The interpretation of categorical variables still falls under the template language of “for every one unit increase in Xp
+, Y changes by bp”. Here, X3=0
+
+for males, and 1 for females. So a 1 “unit” change is females compared to males.
+
+Which model fits better? What measure are you using to quanitify “fit”?
+
+## Class 4 1-29-20
+
+Given `y=height(in)` and `x=major college` with levels `BSS ECC NSC COB`
+
+1.) How many level does major have? -- 4
+
+2.) How many indicator variables need to be created? Which one is the reference group? -- 3 ... BSS is chosen because it is alphabetically ordered 
+
+3.) Write the mathmatical model that related height to major
+
+$$y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_3X_3$$
+Where: 
+* $X_1 =1$ when major is `COB` 
+* $X_2 =1$ when major is `ECC` 
+* $X_3 =1$ when major is `NSC`
+
+$X_1 = X_2 = X_3 = 0$ all other times
+
+Given a table of values from iris data set 8.6
+
+$$y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_3X_3$$
+$\beta_1X_1$ is our sepal length while $\beta_2X_2$ and $\beta_3X_3$ are specis
+
+When controlling for species for every 1cm increase in sepal length petal length increases by 0.63 (.54 .72)cm  
+
+When controlling for sepal length, Veriscolor iris have 2.21 (2.07 2.35)cm longer petal length compared to setosa
+
+### Stratification 9.1
+
+In our above mathmatical model our slope is constant for all species and onlt the `y-intercept` changes.  We can split the data set and run a linear model for each species to generate a unique slope intercept for each.
+
+`Virginiaca` $y = (\beta_0 + \beta_3) + \beta_1X_1$
+`Veriscolor` $y = (\beta_0 + \beta_2) + \beta_1X_1$
+`Setosa` $y = \beta_0 + \beta_1X_1$
+
+## Class 5 1-31-20
+
+#### Moderators
+
+**Adjusted $R^2$ is related to the amount of variance that can be explained for with the model** the higher the better but, $R^2$ is only part of the story
+
+#### Interaction Model 9.3
+
+$$y \sim X_1 + X_2 + X_iX_2 $$
+
+##### Example
+
+$y = Petal Length$
+$X_1 = Sepal Length$
+$X_2 = I(Species = Setosa)$ -- this is know as an interaction term
+
+Stratification models break up the categorical variable into different datasets which an interaction runs on the full dataset
+
+**Cannot interpret main effects directly in an interaction model**
+
+Interaction term -- the effect og sepal length on petal length is 0.61cm smaller for setosa compared to no sotosa iris'
+
+## Class 7 02-05-20
+
+### LASSO Variable Selection
+
+When the number of variables far outweighs the number of observations LASSO is a good method to use for variable selection because it gives us the importance of a variable in predicitng.
+
+Reduce variablity but increase bias
+
+LASSO Geometry
+
+Least: Minimize the error
+Absolute: Uses Absolute Value For penalty function
+Shrinkage: It's iterative minimizing more and more over time 
+Selection: Some variables go to zero and are discluded
+
+`glmnet`
+
+**PRO-TIP** `set.seed(1)` allows for reproducieble results
+
+```
+cvfit <- cv.glmnet(X, y, alpha=[0-1])
+fit <- cvfit$glmnet.fit
+
+cvfit$lambda.min
+```
+```
+b <- coef(cvfit, scvfit$lambda.min)
+```
+
+## Class 8 02-07-20
+
+9.5 in course notes
+
+Does confounders just occur in highly coorelated / co-linear variables?
+
+No, it can mean they will be cofounder but not guarunteeds from course notes 9.4
+
+```
+If the relationship between $x_1$ and y is bivariately significant, but then no longer significant once $x_2$ has been added to the model, then $x_2$ is said to explain, or confound, the relationship between $x_1$ and y.
+```
+
+Parsimony -- simple over complex
+
+The mest is a Wald F test
+
+**great for survival analysis and difference of differences**
+
+```
+full_model <- lm(cesd ~ age + chronill + employ, data=depress)
+pander(summary(full_model))
+survey::regTermTest(full_model, "employ")
+```
+
+say we wanted to look at all employment not just the categorized responses 
+
+## Class 9 02-10-20
+
+Questions and such.  Check out [Q&A](https://docs.google.com/document/d/1OVCqMtHV0djFYR9KdjZJP9RTq-6sehr4Qo7VyZ02Jew/edit) for some good recap questions so far.
+
+## Class 10 02-12-20
+
+When we see the equation
+
+$$E(Y) = \mu$$
+we interpret this as the means of y this also takes on the form of:
+
+$$E(Y|X)$$
+where now we are saying the mean of y given x
+
+This van be applied to what we call a **Generalized Linear Model** which is a function that links y to x and is of the form below. C is a link function which can take forms:
+
+* linear C = 1
+* Logistic [0,1] C = logit function
+* Poisson C = log function
+
+$$y = C(X)$$
+
+If y is Dichotomous we are looking at 0/1, true/false, yes/no, etc.
+
+To move from a continous to Dichotomous model we need to not think of predicting the value but rather the propability of an expected outcome.  We can generalize these *odds* to be a function
+
+let $p = P(y=1)$ where P is the proability
+
+$$\frac{P}{1-P}$$
+
+This gives us a range of values from `[0,$\inf$]`
+
+We can transform this with:
+
+$$log(\frac{P}{1-p})$$
+and now we are on a scale of `[0,1]`
+
+When we compare this with linear Regression
+
+$$ y = \beta_0 + \beta_1X_1+\beta_2X_2 + \space .... $$
+
+And Logistic is
+
+$$ log(\frac{P}{1-P}) = \beta_0 + \beta_1X_1 + \beta_2X_2 + \space .... $$
+
+In any inferential statistics we want to know how much y changes when we change X. 
+
+## Class 11 02-14-20
+
+Interpret what an odds ratio (OR) is >1, =1, <1
+
+So odds ratio means
+
+(the likelihood something whil happen) / (the likely hood it will)
+
+An odds ratio = 1 means either is equally likely to occur
+`>1` is that it is more likely to occur then 0
+`<1` is that it's less likely to occur then 0
+
+Logit functions do not give symetrical confidence interval because the are not linear models
+
+We don't get an $R^2$ because we are not predicting a continous y so we can't be off by some amount, were either right or wrong.
